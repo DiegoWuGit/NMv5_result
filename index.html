@@ -22,7 +22,7 @@
     <div id="map"></div>
 
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
-    <script src="https://unpkg.com/shapefile@0.6.9/dist/shapefile.js"></script>
+    <script src="https://unpkg.com/shpjs@latest/dist/shp.min.js"></script>
     <script>
         // Initialize the map
         var map = L.map('map').setView([56.1304, -106.3468], 4);
@@ -33,8 +33,8 @@
         }).addTo(map);
 
         // Add a marker to the map at a specific location (e.g., Ottawa)
-        var marker = L.marker([53.5461, -113.4938]).addTo(map);
-        marker.bindPopup("<b>Edmonton</b><br>Capital of Alberta").openPopup();
+        var marker = L.marker([45.4215, -75.6972]).addTo(map);
+        marker.bindPopup("<b>Ottawa</b><br>Capital of Canada").openPopup();
 
         // Add a circle to the map
         var circle = L.circle([53.5461, -113.4938], {
@@ -53,17 +53,13 @@
             if (file) {
                 var reader = new FileReader();
                 reader.onload = function(e) {
-                    var arrayBuffer = e.target.result;
-                    shapefile.open(arrayBuffer)
-                        .then(source => source.read()
-                            .then(function log(result) {
-                                if (result.done) return;
-                                var geojsonLayer = L.geoJSON(result.value);
-                                geojsonLayer.addTo(map);
-                                map.fitBounds(geojsonLayer.getBounds());
-                                return source.read().then(log);
-                            }))
-                        .catch(error => console.error(error));
+                    shp(e.target.result).then(function(geojson) {
+                        var geojsonLayer = L.geoJSON(geojson).addTo(map);
+                        map.fitBounds(geojsonLayer.getBounds());
+                    }).catch(function(error) {
+                        console.error(error);
+                        alert('Error reading shapefile: ' + error);
+                    });
                 };
                 reader.readAsArrayBuffer(file);
             } else {
