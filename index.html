@@ -8,15 +8,21 @@
     <style>
         #map { height: 600px; width: 100%; }
         body { margin: 0; padding: 0; }
+        #upload-container { margin: 20px; }
     </style>
 </head>
 <body>
     <h1>Hello World</h1>
     <p>I'm hosted with GitHub Pages.</p>
     <h1>Interactive Map of Canada</h1>
+    <div id="upload-container">
+        <input type="file" id="file-input" accept=".zip" />
+        <button id="upload-button">Upload Shapefile</button>
+    </div>
     <div id="map"></div>
 
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/shapefile-js/0.6.9/shapefile.min.js"></script>
     <script>
         // Initialize the map
         var map = L.map('map').setView([56.1304, -106.3468], 4);
@@ -46,6 +52,32 @@
             [49.8951, -97.1384]
         ]).addTo(map);
         polygon.bindPopup("Polygon covering Victoria, Vancouver, and Winnipeg");
+
+        // Handle shapefile upload
+        document.getElementById('upload-button').addEventListener('click', function() {
+            var fileInput = document.getElementById('file-input');
+            var file = fileInput.files[0];
+
+            if (file) {
+                var reader = new FileReader();
+                reader.onload = function(e) {
+                    var arrayBuffer = e.target.result;
+                    shapefile.open(arrayBuffer)
+                        .then(source => source.read()
+                            .then(function log(result) {
+                                if (result.done) return;
+                                var geojsonLayer = L.geoJSON(result.value);
+                                geojsonLayer.addTo(map);
+                                map.fitBounds(geojsonLayer.getBounds());
+                                return source.read().then(log);
+                            }))
+                        .catch(error => console.error(error));
+                };
+                reader.readAsArrayBuffer(file);
+            } else {
+                alert('Please select a file before clicking "Upload Shapefile".');
+            }
+        });
     </script>
 </body>
 </html>
