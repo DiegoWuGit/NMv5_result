@@ -22,7 +22,7 @@
     <div id="map"></div>
 
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/shapefile-js/0.6.9/shapefile.min.js"></script>
+    <script src="https://unpkg.com/shapefile@0.6.9/dist/shapefile.js"></script>
     <script>
         // Initialize the map
         var map = L.map('map').setView([56.1304, -106.3468], 4);
@@ -33,8 +33,8 @@
         }).addTo(map);
 
         // Add a marker to the map at a specific location (e.g., Ottawa)
-        var marker = L.marker([45.4215, -75.6972]).addTo(map);
-        marker.bindPopup("<b>Ottawa</b><br>Capital of Canada").openPopup();
+        var marker = L.marker([53.5461, -113.4938]).addTo(map);
+        marker.bindPopup("<b>Edmonton</b><br>Capital of Alberta").openPopup();
 
         // Add a circle to the map
         var circle = L.circle([53.5461, -113.4938], {
@@ -44,14 +44,6 @@
             radius: 50000
         }).addTo(map);
         circle.bindPopup("Edmonton");
-
-        // Add a polygon to the map
-        var polygon = L.polygon([
-            [48.4284, -123.3656],
-            [49.2827, -123.1207],
-            [49.8951, -97.1384]
-        ]).addTo(map);
-        polygon.bindPopup("Polygon covering Victoria, Vancouver, and Winnipeg");
 
         // Handle shapefile upload
         document.getElementById('upload-button').addEventListener('click', function() {
