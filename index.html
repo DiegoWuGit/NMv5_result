@@ -24,19 +24,22 @@
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
     <script src="https://unpkg.com/shpjs@latest/dist/shp.min.js"></script>
     <script>
-        // Initialize the map
         var map = L.map('map').setView([56.1304, -106.3468], 4);
-
-        // Add a tile layer to the map
+    
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         }).addTo(map);
-
-        // Handle shapefile upload
+    
+        // Define the geographical bounds of the raster image
+        var bounds = [[40, -130], [70, -60]]; // Adjust these values to fit the image's actual location
+    
+        // Add the raster image as an overlay
+        L.imageOverlay('https://borealbirds.github.io/api/v4/species/ALFL/images/mean-pred.png', bounds).addTo(map);
+    
         document.getElementById('upload-button').addEventListener('click', function() {
             var fileInput = document.getElementById('file-input');
             var file = fileInput.files[0];
-
+    
             if (file) {
                 var reader = new FileReader();
                 reader.onload = function(e) {
@@ -54,5 +57,6 @@
             }
         });
     </script>
+    
 </body>
 </html>
