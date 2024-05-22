@@ -36,10 +36,16 @@
     
         // Define the geographical bounds of the raster image
         var bounds = [[35, -160], [70, -30]]; // Adjust these values to fit the image's actual location
-    
+        
         // Add the raster image as an overlay
-        L.imageOverlay('https://borealbirds.github.io/api/v4/species/ALFL/images/mean-pred.png', bounds).addTo(map);
-    
+        L.imageOverlay('https://borealbirds.github.io/api/v4/species/ALFL/images/mean-pred.png', bounds, {opacity: 1}).addTo(map);
+
+        var imageOverlay;
+
+        function updateOpacity(value) {
+        imageOverlay.setOpacity(value);
+        }
+
         document.getElementById('upload-button').addEventListener('click', function() {
             var fileInput = document.getElementById('file-input');
             var file = fileInput.files[0];
@@ -62,14 +68,7 @@
         });
     </script>
 
-    var imageOverlay;
 
-    function updateOpacity(value) {
-        imageOverlay.setOpacity(value);
-    }
-    
-    // When adding the image overlay, store it in the variable
-    imageOverlay = L.imageOverlay('https://borealbirds.github.io/api/v4/species/ALFL/images/mean-pred.png', bounds, {opacity: 1}).addTo(map);
     
 </body>
 </html>
