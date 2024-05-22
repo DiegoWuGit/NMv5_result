@@ -43,6 +43,8 @@
         worldCopyJump: false
         });
 
+        map.setView([50, -90], 4); // Adjust based on the actual central point and a suitable zoom level of your data
+
         L.tileLayer('url_to_your_custom_tiles/{z}/{x}/{y}.png', {
         maxZoom: 20,
         minZoom: 0,
@@ -50,7 +52,7 @@
        }).addTo(map);
     
         // Define the geographical bounds of the raster image
-        var bounds = [[35, -160], [70, -30]]; // Adjust these values to fit the image's actual location
+        var bounds = [[40, -130], [70, -60]]; // Adjust these values to fit the image's actual location
         
         // Add the raster image as an overlay and store it in the imageOverlay variable
         imageOverlay = L.imageOverlay('https://borealbirds.github.io/api/v4/species/ALFL/images/mean-pred.png', bounds, {opacity: 1}).addTo(map);
