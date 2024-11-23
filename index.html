@@ -62,9 +62,10 @@
                 rasterLayer.alpha = parseFloat(value);
             }
         }
-        
-<script src="https://unpkg.com/shpjs@latest/dist/shp.min.js"></script>
-document.getElementById('upload-button').addEventListener('click', function () {
+    </script>
+   
+    <script src="https://unpkg.com/shpjs@latest/dist/shp.min.js"></script>
+    document.getElementById('upload-button').addEventListener('click', function () {
     var fileInput = document.getElementById('file-input');
     var file = fileInput.files[0];
 
@@ -102,7 +103,6 @@ document.getElementById('upload-button').addEventListener('click', function () {
     } else {
         alert('Please select a file before clicking "Upload Shapefile".');
     }
-});
-    </script>
+    });
 </body>
 </html>
