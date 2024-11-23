@@ -12,9 +12,9 @@
     </style>
 </head>
 <body>
-    <h1>Hello World</h1>
-    <p>I'm hosted with GitHub Pages.</p>
-    <h1>Interactive Map of Canada</h1>
+    <h1>Boreal Bird Species Results</h1>
+    <p>by the Boreal Avian Modelling Project</p>
+    <h1>Upload your area of interest</h1>
     <div id="upload-container">
         <input type="file" id="file-input" accept=".zip" />
         <button id="upload-button">Upload Shapefile</button>
@@ -27,7 +27,7 @@
 
     <script src="https://cesium.com/downloads/cesiumjs/releases/1.106/Build/Cesium/Cesium.js"></script>
     <script>
-        // Add your Cesium token here
+        // Add Cesium token here
         Cesium.Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiJmNDE3OGZmMS0xN2FjLTQyYzMtYWQ5Ny1kZGU0NmU1NTc4YjEiLCJpZCI6MTI0ODk5LCJpYXQiOjE2NzY1MTk4NTV9.Xiy7wfbHWEFN-5x9Q-oI2Ecv3joy0omtVrfoVrAuxRY';
 
         // Initialize the Cesium Viewer
@@ -37,16 +37,22 @@
             baseLayerPicker: true,
         });
 
-        // Raster image overlay
-        var imageProvider = new Cesium.SingleTileImageryProvider({
-            url: 'https://borealbirds.github.io/api/v4/species/ALFL/images/mean-pred.png',
-            rectangle: Cesium.Rectangle.fromDegrees(-160, 35, -30, 70),
-        });
-        var imageLayer = viewer.imageryLayers.addImageryProvider(imageProvider);
+        var rasterLayer; // Variable to store the GeoTIFF layer
 
-        // Opacity control for raster image
+        // Add GeoTIFF imagery from Cesium Ion
+        Cesium.IonResource.fromAssetId(2861712).then(function(resource) { 
+            rasterLayer = viewer.imageryLayers.addImageryProvider(
+                new Cesium.IonImageryProvider({ assetId: 2861712 }) 
+            );
+        }).catch(function(error) {
+            console.error('Error loading GeoTIFF:', error);
+        });
+
+        // Opacity control for raster GeoTIFF
         function updateOpacity(value) {
-            imageLayer.alpha = parseFloat(value);
+            if (rasterLayer) {
+                rasterLayer.alpha = parseFloat(value);
+            }
         }
 
         // Shapefile upload logic
