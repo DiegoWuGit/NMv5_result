@@ -33,7 +33,7 @@
 
         // Initialize the Cesium Viewer with OpenStreetMap
         var viewer = new Cesium.Viewer('map', {
-            imageryProvider: Cesium.createOpenStreetMapImageryProvider({
+            imageryProvider: new Cesium.OpenStreetMapImageryProvider({
                 url: 'https://a.tile.openstreetmap.org/' // URL to OpenStreetMap tiles
             }),
             terrainProvider: Cesium.createWorldTerrain(), // Optional if you still want terrain data
