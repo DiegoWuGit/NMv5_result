@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cesium.com/downloads/cesiumjs/releases/1.106/Build/Cesium/Widgets/widgets.css" />
     <style>
-        #map { height: 600px; width: 100%; }
+        #map { height: 800px; width: 100%; }
         body { margin: 0; padding: 0; }
         #upload-container { margin: 20px; }
     </style>
@@ -24,19 +24,27 @@
         <label>Adjust Transparency: </label>
         <input type="range" id="opacity-slider" min="0" max="1" step="0.1" value="1" oninput="updateOpacity(this.value)">
     </div>
-
+    <p>&copy; OpenStreetMap contributors</p>
+    
     <script src="https://cesium.com/downloads/cesiumjs/releases/1.106/Build/Cesium/Cesium.js"></script>
     <script>
         // Add Cesium token here
         Cesium.Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiJmNDE3OGZmMS0xN2FjLTQyYzMtYWQ5Ny1kZGU0NmU1NTc4YjEiLCJpZCI6MTI0ODk5LCJpYXQiOjE2NzY1MTk4NTV9.Xiy7wfbHWEFN-5x9Q-oI2Ecv3joy0omtVrfoVrAuxRY';
 
-        // Initialize the Cesium Viewer
+        // Initialize the Cesium Viewer with OpenStreetMap
         var viewer = new Cesium.Viewer('map', {
-            terrainProvider: Cesium.createWorldTerrain(),
-            imageryProvider: Cesium.createWorldImagery(),
+            imageryProvider: Cesium.createOpenStreetMapImageryProvider({
+                url: 'https://a.tile.openstreetmap.org/' // URL to OpenStreetMap tiles
+            }),
+            terrainProvider: Cesium.createWorldTerrain(), // Optional if you still want terrain data
             baseLayerPicker: true,
         });
-
+        
+        // Fly to and center on Canada
+        viewer.camera.flyTo({
+            destination: Cesium.Rectangle.fromDegrees(-140, 41, -52, 83), // Coordinates to frame Canada
+        });
+        
         var rasterLayer; // Variable to store the GeoTIFF layer
 
         // Add GeoTIFF imagery from Cesium Ion
@@ -47,7 +55,18 @@
         }).catch(function(error) {
             console.error('Error loading GeoTIFF:', error);
         });
-
+        
+        // Add Cesium building tileset
+        (async function addBuildingTileset() {
+            try {
+                const layer = viewer.imageryLayers.addImageryProvider(
+                    await Cesium.IonImageryProvider.fromAssetId(1549322)
+                );
+            } catch (error) {
+                console.error('Error adding building tileset:', error);
+            }
+        })();
+        
         // Opacity control for raster GeoTIFF
         function updateOpacity(value) {
             if (rasterLayer) {
