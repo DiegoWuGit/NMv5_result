@@ -4,7 +4,7 @@
     <title>Interactive Map of Canada</title>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://cesium.com/downloads/cesiumjs/releases/1.106/Build/Cesium/Widgets/widgets.css" />
     <style>
         #map { height: 600px; width: 100%; }
         body { margin: 0; padding: 0; }
@@ -23,51 +23,54 @@
     <div id="controls">
         <label>Adjust Transparency: </label>
         <input type="range" id="opacity-slider" min="0" max="1" step="0.1" value="1" oninput="updateOpacity(this.value)">
-    </div>  
+    </div>
 
-    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
-    <script src="https://unpkg.com/shpjs@latest/dist/shp.min.js"></script>
+    <script src="https://cesium.com/downloads/cesiumjs/releases/1.106/Build/Cesium/Cesium.js"></script>
     <script>
-        var map = L.map('map').setView([56.1304, -106.3468], 4);
-    
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-        }).addTo(map);
-    
-        // Define the geographical bounds of the raster image
-        var bounds = [[35, -160], [70, -30]]; // Adjust these values to fit the image's actual location
-        
-        // Add the raster image as an overlay and store it in the imageOverlay variable
-        imageOverlay = L.imageOverlay('https://borealbirds.github.io/api/v4/species/ALFL/images/mean-pred.png', bounds, {opacity: 1}).addTo(map);
-    
+        // Add your Cesium token here
+        Cesium.Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiJmNDE3OGZmMS0xN2FjLTQyYzMtYWQ5Ny1kZGU0NmU1NTc4YjEiLCJpZCI6MTI0ODk5LCJpYXQiOjE2NzY1MTk4NTV9.Xiy7wfbHWEFN-5x9Q-oI2Ecv3joy0omtVrfoVrAuxRY';
+
+        // Initialize the Cesium Viewer
+        var viewer = new Cesium.Viewer('map', {
+            terrainProvider: Cesium.createWorldTerrain(),
+            imageryProvider: Cesium.createWorldImagery(),
+            baseLayerPicker: true,
+        });
+
+        // Raster image overlay
+        var imageProvider = new Cesium.SingleTileImageryProvider({
+            url: 'https://borealbirds.github.io/api/v4/species/ALFL/images/mean-pred.png',
+            rectangle: Cesium.Rectangle.fromDegrees(-160, 35, -30, 70),
+        });
+        var imageLayer = viewer.imageryLayers.addImageryProvider(imageProvider);
+
+        // Opacity control for raster image
         function updateOpacity(value) {
-            imageOverlay.setOpacity(value);
+            imageLayer.alpha = parseFloat(value);
         }
-    
+
+        // Shapefile upload logic
         document.getElementById('upload-button').addEventListener('click', function() {
             var fileInput = document.getElementById('file-input');
             var file = fileInput.files[0];
-    
+
             if (file) {
                 var reader = new FileReader();
                 reader.onload = function(e) {
-                    shp(e.target.result).then(function(geojson) {
-                        var geojsonLayer = L.geoJSON(geojson).addTo(map);
-                        map.fitBounds(geojsonLayer.getBounds());
+                    // Load shapefile using CesiumJS
+                    Cesium.GeoJsonDataSource.load(e.target.result).then(function(dataSource) {
+                        viewer.dataSources.add(dataSource);
+                        viewer.flyTo(dataSource);
                     }).catch(function(error) {
                         console.error(error);
                         alert('Error reading shapefile: ' + error);
                     });
                 };
-                reader.readAsArrayBuffer(file);
+                reader.readAsText(file);
             } else {
                 alert('Please select a file before clicking "Upload Shapefile".');
             }
         });
     </script>
-    
-
-
-    
 </body>
 </html>
