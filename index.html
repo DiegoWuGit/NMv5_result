@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cesium.com/downloads/cesiumjs/releases/1.106/Build/Cesium/Widgets/widgets.css" />
     <style>
-        #map { height: 800px; width: 100%; }
+        #map { height: 700px; width: 100%; }
         body { margin: 0; padding: 0; }
         #upload-container { margin: 20px; }
     </style>
@@ -57,13 +57,15 @@
         });
         
         // Add Cesium building tileset
-        (async function addBuildingTileset() {
+        (async function addTileset() {
             try {
-                const layer = viewer.imageryLayers.addImageryProvider(
-                    await Cesium.IonImageryProvider.fromAssetId(1549322)
+                const tileset = viewer.scene.primitives.add(
+                    await Cesium.Cesium3DTileset.fromIonAssetId(96188)
                 );
+                // Adjust view to fit the tileset
+                viewer.zoomTo(tileset);
             } catch (error) {
-                console.error('Error adding building tileset:', error);
+                console.error('Error adding 3D tileset:', error);
             }
         })();
         
