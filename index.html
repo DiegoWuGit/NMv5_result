@@ -55,49 +55,54 @@
         }).catch(function(error) {
             console.error('Error loading GeoTIFF:', error);
         });
-        
-        // Add Cesium building tileset
-        (async function addTileset() {
-            try {
-                const tileset = viewer.scene.primitives.add(
-                    await Cesium.Cesium3DTileset.fromIonAssetId(96188)
-                );
-                // Adjust view to fit the tileset
-                viewer.zoomTo(tileset);
-            } catch (error) {
-                console.error('Error adding 3D tileset:', error);
-            }
-        })();
-        
+                
         // Opacity control for raster GeoTIFF
         function updateOpacity(value) {
             if (rasterLayer) {
                 rasterLayer.alpha = parseFloat(value);
             }
         }
+        
+<script src="https://unpkg.com/shpjs@latest/dist/shp.min.js"></script>
+document.getElementById('upload-button').addEventListener('click', function () {
+    var fileInput = document.getElementById('file-input');
+    var file = fileInput.files[0];
 
-        // Shapefile upload logic
-        document.getElementById('upload-button').addEventListener('click', function() {
-            var fileInput = document.getElementById('file-input');
-            var file = fileInput.files[0];
+    if (file) {
+        var reader = new FileReader();
+        reader.onload = function (e) {
+            // Read the ZIP file content
+            var zipData = e.target.result;
 
-            if (file) {
-                var reader = new FileReader();
-                reader.onload = function(e) {
-                    // Load shapefile using CesiumJS
-                    Cesium.GeoJsonDataSource.load(e.target.result).then(function(dataSource) {
-                        viewer.dataSources.add(dataSource);
-                        viewer.flyTo(dataSource);
-                    }).catch(function(error) {
-                        console.error(error);
-                        alert('Error reading shapefile: ' + error);
+            try {
+                // Use shpjs to parse the shapefile ZIP
+                shp(zipData)
+                    .then(function (geojson) {
+                        // Add GeoJSON as a data source to the Cesium viewer
+                        Cesium.GeoJsonDataSource.load(geojson).then(function (dataSource) {
+                            viewer.dataSources.add(dataSource);
+                            viewer.flyTo(dataSource);
+                        }).catch(function (error) {
+                            console.error('Error adding GeoJSON to Cesium:', error);
+                            alert('Error adding GeoJSON to Cesium: ' + error.message);
+                        });
+                    })
+                    .catch(function (error) {
+                        console.error('Error parsing shapefile ZIP:', error);
+                        alert('Error parsing shapefile ZIP: ' + error.message);
                     });
-                };
-                reader.readAsText(file);
-            } else {
-                alert('Please select a file before clicking "Upload Shapefile".');
+            } catch (error) {
+                console.error('Error reading shapefile:', error);
+                alert('Error reading shapefile: ' + error.message);
             }
-        });
+        };
+
+        // Read the file as an ArrayBuffer for shpjs
+        reader.readAsArrayBuffer(file);
+    } else {
+        alert('Please select a file before clicking "Upload Shapefile".');
+    }
+});
     </script>
 </body>
 </html>
