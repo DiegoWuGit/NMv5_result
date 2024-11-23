@@ -36,7 +36,7 @@
             imageryProvider: new Cesium.OpenStreetMapImageryProvider({
                 url: 'https://a.tile.openstreetmap.org/' // URL to OpenStreetMap tiles
             }),
-            terrainProvider: Cesium.createWorldTerrain(), // Optional if you still want terrain data
+            // terrainProvider: Cesium.createWorldTerrain(), // Optional
             baseLayerPicker: true,
         });
         
@@ -63,46 +63,5 @@
             }
         }
     </script>
-   
-    <script src="https://unpkg.com/shpjs@latest/dist/shp.min.js"></script>
-    document.getElementById('upload-button').addEventListener('click', function () {
-    var fileInput = document.getElementById('file-input');
-    var file = fileInput.files[0];
-
-    if (file) {
-        var reader = new FileReader();
-        reader.onload = function (e) {
-            // Read the ZIP file content
-            var zipData = e.target.result;
-
-            try {
-                // Use shpjs to parse the shapefile ZIP
-                shp(zipData)
-                    .then(function (geojson) {
-                        // Add GeoJSON as a data source to the Cesium viewer
-                        Cesium.GeoJsonDataSource.load(geojson).then(function (dataSource) {
-                            viewer.dataSources.add(dataSource);
-                            viewer.flyTo(dataSource);
-                        }).catch(function (error) {
-                            console.error('Error adding GeoJSON to Cesium:', error);
-                            alert('Error adding GeoJSON to Cesium: ' + error.message);
-                        });
-                    })
-                    .catch(function (error) {
-                        console.error('Error parsing shapefile ZIP:', error);
-                        alert('Error parsing shapefile ZIP: ' + error.message);
-                    });
-            } catch (error) {
-                console.error('Error reading shapefile:', error);
-                alert('Error reading shapefile: ' + error.message);
-            }
-        };
-
-        // Read the file as an ArrayBuffer for shpjs
-        reader.readAsArrayBuffer(file);
-    } else {
-        alert('Please select a file before clicking "Upload Shapefile".');
-    }
-    });
 </body>
 </html>
