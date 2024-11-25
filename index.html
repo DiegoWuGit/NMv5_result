@@ -33,8 +33,14 @@
 
         // Initialize the Cesium Viewer with OpenStreetMap
         var viewer = new Cesium.Viewer('map', {
-            imageryProvider: new Cesium.OpenStreetMapImageryProvider({
-                url: 'https://a.tile.openstreetmap.org/' // URL to OpenStreetMap tiles
+            imageryProvider: new Cesium.WebMapTileServiceImageryProvider({
+                url : 'http://basemap.nationalmap.gov/arcgis/rest/services/USGSShadedReliefOnly/MapServer/WMTS/tile/1.0.0/USGSShadedReliefOnly/{Style}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.jpg',
+                layer : 'USGSShadedReliefOnly',
+                style : 'default',
+                format : 'image/jpeg',
+                tileMatrixSetID : 'default028mm',
+                maximumLevel: 19,
+                credit : new Cesium.Credit('U. S. Geological Survey')
             }),
             // terrainProvider: Cesium.createWorldTerrain(), // Optional
             baseLayerPicker: true,
