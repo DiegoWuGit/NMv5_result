@@ -13,5 +13,15 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v3
 
-    - name: Use Secret in the Workflow
-      run: echo "Your token is ${{ secrets.CESIUMAPI }}"
+    - name: Inject Cesium API Key into index.html
+      env:
+        CESIUM_API_KEY: ${{ secrets.CESIUMAPI }}
+      run: |
+        echo "Injecting Cesium API Key..."
+        sed -i 's/<<CESIUM_API_KEY>>/'"$CESIUM_API_KEY"'/' index.html
+
+    - name: Deploy to GitHub Pages
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: . # Adjust if using a build directory like `dist`

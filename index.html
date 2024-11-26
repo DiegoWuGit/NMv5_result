@@ -10,6 +10,9 @@
         body { margin: 0; padding: 0; }
         #upload-container { margin: 20px; }
     </style>
+     <script>
+         const CESIUM_API_KEY = '<<CESIUM_API_KEY>>';; // Placeholder for secret
+    </script>
 </head>
 <body>
     <h1>Boreal Bird Species Results</h1>
@@ -29,8 +32,7 @@
     <script src="https://cesium.com/downloads/cesiumjs/releases/1.106/Build/Cesium/Cesium.js"></script>
     <script>
         // Add Cesium token here
-        Cesium.Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiJmNDE3OGZmMS0xN2FjLTQyYzMtYWQ5Ny1kZGU0NmU1NTc4YjEiLCJpZCI6MTI0ODk5LCJpYXQiOjE2NzY1MTk4NTV9.Xiy7wfbHWEFN-5x9Q-oI2Ecv3joy0omtVrfoVrAuxRY';
-
+        Cesium.Ion.defaultAccessToken = CESIUM_API_KEY;
         // Initialize the Cesium Viewer with OpenStreetMap
         var viewer = new Cesium.Viewer('map', {
             imageryProvider: new Cesium.OpenStreetMapImageryProvider({
